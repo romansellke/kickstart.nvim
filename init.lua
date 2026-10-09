@@ -80,7 +80,7 @@ require('lazy').setup({
     require('tokyonight').setup({
       style = 'night',
     })
-    vim.cmd.colorscheme('glossy')
+    vim.cmd.colorscheme('nebel')
   end,
 },
 -- =======================================================
