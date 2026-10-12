@@ -299,6 +299,4 @@ require('keymaps')
 -- =========================================================
 -- Platten sortieren 
 -- =========================================================
-vim.api.nvim_create_user_command('SortPlatten', function()
-  vim.cmd([[%!grep -v '^-\+$' | sort | awk -F' - ' '{if(NR>1 && $1\!=prev) print "----------------------------------------"; print; prev=$1}']])
-end, {})
+require('platten').setup()
