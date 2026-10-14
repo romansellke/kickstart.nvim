@@ -1,136 +1,268 @@
--- nebel: Neovim-Farbschema, Farben kommen aus ~/.config/nvim/lua/nebel_palette.lua
--- (erzeugt von ~/.config/nebel/theme.py). Aktivieren: vim.cmd.colorscheme("nebel")
+-- ~/.config/nvim/colors/nebel.lua
+-- Colorscheme "Nebel", von Hand gepflegt. Gleiche Palette wie kitty.conf.
+-- Aktivieren mit: vim.cmd.colorscheme('nebel')
 
-vim.cmd("highlight clear")
-if vim.fn.exists("syntax_on") == 1 then vim.cmd("syntax reset") end
-vim.o.termguicolors = true
-vim.o.background = "dark"
-vim.g.colors_name = "nebel"
-
--- true: Hintergrund durchsichtig (Kitty-Deckkraft und Hyprland-Blur scheinen durch)
+-- true  = Hintergrund transparent (kitty-Opacity + Hyprland-Blur scheinen durch)
+-- false = deckender Hintergrund
 local transparent = true
 
--- Rückfallwerte, falls die erzeugte Palette fehlt
-local fallback = {
-  bg = "#161D21", surface = "#1E282D", surface2 = "#27343A", border = "#34454D",
-  fg = "#D9E3E7", fg_bright = "#F4F8FA", fg_dim = "#8FA3AC", fg_muted = "#758A94",
-  accent = "#A9C7D4", selection = "#2F4550",
-  danger = "#D98A8A", ok = "#8FB3A0", warn = "#C9B38A",
-  red = "#C27C7C", green = "#8FB3A0", yellow = "#C9B38A",
-  blue = "#7F9FB5", magenta = "#A394B8", cyan = "#8DB4BF",
+vim.cmd('highlight clear')
+if vim.fn.exists('syntax_on') == 1 then vim.cmd('syntax reset') end
+vim.o.termguicolors = true
+vim.o.background = 'dark'
+vim.g.colors_name = 'nebel'
+
+-- ---------------------------------------------------------
+-- Palette
+-- ---------------------------------------------------------
+local c = {
+  bg        = '#071426',
+  bg_alt    = '#0D1F36',
+  bg_sel    = '#1D3A5F',
+  bg_hl     = '#0F2542',
+  border    = '#1A3350',
+  fg        = '#E6EEF1',
+  fg_dim    = '#9AB0BC',
+  comment   = '#6F8594',
+  accent    = '#7FD3EA',
+  red       = '#E07A7A',
+  green     = '#7FCFA0',
+  yellow    = '#E8BE7A',
+  blue      = '#6AAEE0',
+  purple    = '#B79CED',
+  cyan      = '#5CCBE6',
+  orange    = '#F0A870',
+  ice       = '#8DE0F2',
 }
-local ok, loaded = pcall(require, "nebel_palette")
-local c = setmetatable(ok and loaded or {}, { __index = fallback })
 
-local bg = transparent and "NONE" or c.bg
-local function hl(group, spec) vim.api.nvim_set_hl(0, group, spec) end
-local function link(group, target) vim.api.nvim_set_hl(0, group, { link = target }) end
+local bg = transparent and 'NONE' or c.bg
 
--- Oberfläche
-hl("Normal",       { fg = c.fg, bg = bg })
-hl("NormalNC",     { fg = c.fg, bg = bg })
-hl("NormalFloat",  { fg = c.fg, bg = c.surface })
-hl("FloatBorder",  { fg = c.border, bg = c.surface })
-hl("FloatTitle",   { fg = c.accent, bg = c.surface, bold = true })
-hl("SignColumn",   { bg = bg })
-hl("LineNr",       { fg = c.fg_muted })
-hl("CursorLineNr", { fg = c.accent, bold = true })
-hl("CursorLine",   { bg = c.surface })
-hl("ColorColumn",  { bg = c.surface })
-hl("Visual",       { bg = c.selection })
-hl("Search",       { fg = c.bg, bg = c.fg_dim })
-hl("IncSearch",    { fg = c.bg, bg = c.accent })
-hl("CurSearch",    { fg = c.bg, bg = c.accent })
-hl("MatchParen",   { fg = c.accent, bold = true, underline = true })
-hl("Cursor",       { fg = c.bg, bg = c.accent })
-hl("WinSeparator", { fg = c.border })
-hl("VertSplit",    { fg = c.border })
-hl("EndOfBuffer",  { fg = c.surface })
-hl("NonText",      { fg = c.border })
-hl("Whitespace",   { fg = c.border })
-hl("Folded",       { fg = c.fg_dim, bg = c.surface })
-hl("Directory",    { fg = c.accent })
-hl("Title",        { fg = c.fg_bright, bold = true })
-hl("ErrorMsg",     { fg = c.danger })
-hl("WarningMsg",   { fg = c.warn })
-hl("MoreMsg",      { fg = c.ok })
-hl("Question",     { fg = c.accent })
+local function hi(group, opts)
+  vim.api.nvim_set_hl(0, group, opts)
+end
 
-hl("Pmenu",        { fg = c.fg, bg = c.surface })
-hl("PmenuSel",     { fg = c.fg_bright, bg = c.surface2 })
-hl("PmenuSbar",    { bg = c.surface2 })
-hl("PmenuThumb",   { bg = c.fg_muted })
-hl("StatusLine",   { fg = c.fg, bg = c.surface })
-hl("StatusLineNC", { fg = c.fg_muted, bg = c.surface })
-hl("TabLine",      { fg = c.fg_muted, bg = c.surface })
-hl("TabLineSel",   { fg = c.fg_bright, bg = c.surface2, bold = true })
-hl("TabLineFill",  { bg = c.surface })
+-- ---------------------------------------------------------
+-- Editor-UI
+-- ---------------------------------------------------------
+hi('Normal',        { fg = c.fg, bg = bg })
+hi('NormalNC',      { fg = c.fg, bg = bg })
+hi('NormalFloat',   { fg = c.fg, bg = c.bg_alt })
+hi('FloatBorder',   { fg = c.border, bg = c.bg_alt })
+hi('FloatTitle',    { fg = c.accent, bg = c.bg_alt, bold = true })
+hi('Cursor',        { fg = c.bg, bg = c.accent })
+hi('lCursor',       { link = 'Cursor' })
+hi('TermCursor',    { link = 'Cursor' })
+hi('CursorLine',    { bg = c.bg_hl })
+hi('CursorColumn',  { bg = c.bg_hl })
+hi('ColorColumn',   { bg = c.bg_hl })
+hi('LineNr',        { fg = c.comment })
+hi('CursorLineNr',  { fg = c.accent, bold = true })
+hi('SignColumn',    { fg = c.comment, bg = bg })
+hi('FoldColumn',    { fg = c.comment, bg = bg })
+hi('Folded',        { fg = c.fg_dim, bg = c.bg_alt })
+hi('Visual',        { bg = c.bg_sel })
+hi('VisualNOS',     { bg = c.bg_sel })
+hi('Search',        { fg = c.fg, bg = c.bg_sel, underline = true })
+hi('CurSearch',     { fg = c.bg, bg = c.accent, bold = true })
+hi('IncSearch',     { fg = c.bg, bg = c.accent, bold = true })
+hi('Substitute',    { fg = c.bg, bg = c.red })
+hi('MatchParen',    { fg = c.orange, bold = true, underline = true })
+hi('NonText',       { fg = c.border })
+hi('Whitespace',    { fg = c.border })
+hi('EndOfBuffer',   { fg = c.bg })
+hi('SpecialKey',    { fg = c.border })
+hi('Conceal',       { fg = c.comment })
+hi('Directory',     { fg = c.blue })
+hi('Title',         { fg = c.accent, bold = true })
+hi('WinSeparator',  { fg = c.border, bg = bg })
+hi('VertSplit',     { link = 'WinSeparator' })
 
--- Syntax: gedämpfte Pastelltöne, Kommentare zurückgenommen
-hl("Comment",      { fg = c.fg_muted, italic = true })
-hl("Constant",     { fg = c.yellow })
-hl("String",       { fg = c.green })
-hl("Character",    { fg = c.green })
-hl("Number",       { fg = c.yellow })
-hl("Boolean",      { fg = c.yellow })
-hl("Identifier",   { fg = c.fg })
-hl("Function",     { fg = c.accent })
-hl("Statement",    { fg = c.magenta })
-hl("Operator",     { fg = c.fg_dim })
-hl("Keyword",      { fg = c.magenta })
-hl("PreProc",      { fg = c.blue })
-hl("Type",         { fg = c.blue })
-hl("Special",      { fg = c.cyan })
-hl("Delimiter",    { fg = c.fg_dim })
-hl("Todo",         { fg = c.bg, bg = c.warn, bold = true })
-hl("Error",        { fg = c.danger })
+hi('StatusLine',    { fg = c.fg, bg = c.bg_alt })
+hi('StatusLineNC',  { fg = c.comment, bg = c.bg_alt })
+hi('TabLine',       { fg = c.fg_dim, bg = c.bg_alt })
+hi('TabLineSel',    { fg = c.bg, bg = c.accent, bold = true })
+hi('TabLineFill',   { bg = c.bg_alt })
+hi('WinBar',        { fg = c.fg_dim, bg = bg })
+hi('WinBarNC',      { fg = c.comment, bg = bg })
 
+hi('Pmenu',         { fg = c.fg, bg = c.bg_alt })
+hi('PmenuSel',      { fg = c.fg, bg = c.bg_sel, bold = true })
+hi('PmenuSbar',     { bg = c.bg_alt })
+hi('PmenuThumb',    { bg = c.border })
+hi('WildMenu',      { link = 'PmenuSel' })
+
+hi('ErrorMsg',      { fg = c.red, bold = true })
+hi('WarningMsg',    { fg = c.yellow })
+hi('MoreMsg',       { fg = c.green })
+hi('ModeMsg',       { fg = c.fg_dim, bold = true })
+hi('Question',      { fg = c.cyan })
+
+-- ---------------------------------------------------------
+-- Klassische Syntax-Gruppen
+-- ---------------------------------------------------------
+hi('Comment',       { fg = c.comment, italic = true })
+hi('Constant',      { fg = c.orange })
+hi('String',        { fg = c.green })
+hi('Character',     { fg = c.green })
+hi('Number',        { fg = c.orange })
+hi('Boolean',       { fg = c.orange })
+hi('Float',         { fg = c.orange })
+hi('Identifier',    { fg = c.fg })
+hi('Function',      { fg = c.blue })
+hi('Statement',     { fg = c.purple })
+hi('Conditional',   { fg = c.purple })
+hi('Repeat',        { fg = c.purple })
+hi('Label',         { fg = c.purple })
+hi('Operator',      { fg = c.ice })
+hi('Keyword',       { fg = c.purple })
+hi('Exception',     { fg = c.red })
+hi('PreProc',       { fg = c.purple })
+hi('Include',       { fg = c.purple })
+hi('Define',        { fg = c.purple })
+hi('Macro',         { fg = c.purple })
+hi('PreCondit',     { fg = c.purple })
+hi('Type',          { fg = c.cyan })
+hi('StorageClass',  { fg = c.cyan })
+hi('Structure',     { fg = c.cyan })
+hi('Typedef',       { fg = c.cyan })
+hi('Special',       { fg = c.cyan })
+hi('SpecialChar',   { fg = c.orange })
+hi('Tag',           { fg = c.blue })
+hi('Delimiter',     { fg = c.fg_dim })
+hi('SpecialComment',{ fg = c.comment, bold = true })
+hi('Debug',         { fg = c.red })
+hi('Underlined',    { underline = true })
+hi('Error',         { fg = c.red })
+hi('Todo',          { fg = c.bg, bg = c.yellow, bold = true })
+
+-- ---------------------------------------------------------
 -- Treesitter
-hl("@variable",           { fg = c.fg })
-hl("@variable.builtin",   { fg = c.red })
-hl("@variable.parameter", { fg = c.fg, italic = true })
-hl("@property",           { fg = c.fg })
-hl("@function.builtin",   { fg = c.accent })
-hl("@constant.builtin",   { fg = c.yellow })
-hl("@punctuation",        { fg = c.fg_dim })
-hl("@tag",                { fg = c.blue })
-hl("@tag.attribute",      { fg = c.magenta })
-hl("@module",             { fg = c.fg })
-link("@function",         "Function")
-link("@keyword",          "Keyword")
-link("@string",           "String")
-link("@comment",          "Comment")
-link("@type",             "Type")
-link("@constant",         "Constant")
-link("@number",           "Number")
-link("@operator",         "Operator")
+-- ---------------------------------------------------------
+hi('@variable',                { fg = c.fg })
+hi('@variable.builtin',        { fg = c.red })
+hi('@variable.parameter',      { fg = c.orange })
+hi('@variable.member',         { fg = c.ice })
+hi('@property',                { fg = c.ice })
+hi('@field',                   { fg = c.ice })
+hi('@constant',                { fg = c.orange })
+hi('@constant.builtin',        { fg = c.orange })
+hi('@module',                  { fg = c.fg })
+hi('@string',                  { fg = c.green })
+hi('@string.escape',           { fg = c.cyan })
+hi('@string.regexp',           { fg = c.cyan })
+hi('@number',                  { fg = c.orange })
+hi('@boolean',                 { fg = c.orange })
+hi('@function',                { fg = c.blue })
+hi('@function.call',           { fg = c.blue })
+hi('@function.builtin',        { fg = c.cyan })
+hi('@function.method',         { fg = c.blue })
+hi('@constructor',             { fg = c.cyan })
+hi('@keyword',                 { fg = c.purple })
+hi('@keyword.function',        { fg = c.purple })
+hi('@keyword.return',          { fg = c.purple })
+hi('@keyword.operator',        { fg = c.purple })
+hi('@operator',                { fg = c.ice })
+hi('@type',                    { fg = c.cyan })
+hi('@type.builtin',            { fg = c.cyan })
+hi('@punctuation.delimiter',   { fg = c.fg_dim })
+hi('@punctuation.bracket',     { fg = c.fg_dim })
+hi('@comment',                 { link = 'Comment' })
+hi('@tag',                     { fg = c.blue })
+hi('@tag.attribute',           { fg = c.ice })
+hi('@tag.delimiter',           { fg = c.fg_dim })
+hi('@markup.heading',          { fg = c.accent, bold = true })
+hi('@markup.strong',           { bold = true })
+hi('@markup.italic',           { italic = true })
+hi('@markup.link',             { fg = c.cyan, underline = true })
+hi('@markup.raw',              { fg = c.green })
 
--- Diagnose
-hl("DiagnosticError", { fg = c.danger })
-hl("DiagnosticWarn",  { fg = c.warn })
-hl("DiagnosticInfo",  { fg = c.blue })
-hl("DiagnosticHint",  { fg = c.cyan })
-hl("DiagnosticOk",    { fg = c.ok })
-hl("DiagnosticUnderlineError", { undercurl = true, sp = c.danger })
-hl("DiagnosticUnderlineWarn",  { undercurl = true, sp = c.warn })
-hl("DiagnosticUnderlineInfo",  { undercurl = true, sp = c.blue })
-hl("DiagnosticUnderlineHint",  { undercurl = true, sp = c.cyan })
+-- ---------------------------------------------------------
+-- LSP und Diagnose
+-- ---------------------------------------------------------
+hi('DiagnosticError',          { fg = c.red })
+hi('DiagnosticWarn',           { fg = c.yellow })
+hi('DiagnosticInfo',           { fg = c.blue })
+hi('DiagnosticHint',           { fg = c.cyan })
+hi('DiagnosticOk',             { fg = c.green })
+hi('DiagnosticVirtualTextError', { fg = c.red,    bg = '#2A2023' })
+hi('DiagnosticVirtualTextWarn',  { fg = c.yellow, bg = '#29261F' })
+hi('DiagnosticVirtualTextInfo',  { fg = c.blue,   bg = '#1D2831' })
+hi('DiagnosticVirtualTextHint',  { fg = c.cyan,   bg = '#1B2A30' })
+hi('DiagnosticUnderlineError', { undercurl = true, sp = c.red })
+hi('DiagnosticUnderlineWarn',  { undercurl = true, sp = c.yellow })
+hi('DiagnosticUnderlineInfo',  { undercurl = true, sp = c.blue })
+hi('DiagnosticUnderlineHint',  { undercurl = true, sp = c.cyan })
+hi('LspReferenceText',         { bg = c.bg_hl })
+hi('LspReferenceRead',         { bg = c.bg_hl })
+hi('LspReferenceWrite',        { bg = c.bg_sel })
 
+-- ---------------------------------------------------------
 -- Diff und Git
-hl("DiffAdd",    { bg = "#17302A" })
-hl("DiffChange", { bg = "#1A2B3A" })
-hl("DiffDelete", { bg = "#34202A" })
-hl("DiffText",   { bg = "#27424F" })
-hl("Added",      { fg = c.ok })
-hl("Changed",    { fg = c.blue })
-hl("Removed",    { fg = c.danger })
-hl("GitSignsAdd",    { fg = c.ok })
-hl("GitSignsChange", { fg = c.blue })
-hl("GitSignsDelete", { fg = c.danger })
+-- ---------------------------------------------------------
+hi('DiffAdd',       { bg = '#1F3329' })
+hi('DiffChange',    { bg = '#1F2C38' })
+hi('DiffDelete',    { bg = '#38262A' })
+hi('DiffText',      { bg = '#1D3A5F' })
+hi('Added',         { fg = c.green })
+hi('Changed',       { fg = c.blue })
+hi('Removed',       { fg = c.red })
+hi('GitSignsAdd',    { fg = c.green })
+hi('GitSignsChange', { fg = c.blue })
+hi('GitSignsDelete', { fg = c.red })
 
+-- ---------------------------------------------------------
+-- Plugins
+-- ---------------------------------------------------------
 -- Telescope
-hl("TelescopeNormal",       { fg = c.fg, bg = c.surface })
-hl("TelescopeBorder",       { fg = c.border, bg = c.surface })
-hl("TelescopeSelection",    { bg = c.surface2 })
-hl("TelescopeMatching",     { fg = c.accent, bold = true })
-hl("TelescopePromptPrefix", { fg = c.accent })
+hi('TelescopeNormal',        { fg = c.fg, bg = c.bg_alt })
+hi('TelescopeBorder',        { fg = c.border, bg = c.bg_alt })
+hi('TelescopePromptNormal',  { fg = c.fg, bg = c.bg_hl })
+hi('TelescopePromptBorder',  { fg = c.border, bg = c.bg_hl })
+hi('TelescopePromptTitle',   { fg = c.bg, bg = c.accent, bold = true })
+hi('TelescopePreviewTitle',  { fg = c.bg, bg = c.green, bold = true })
+hi('TelescopeResultsTitle',  { fg = c.bg, bg = c.blue, bold = true })
+hi('TelescopeSelection',     { fg = c.fg, bg = c.bg_sel, bold = true })
+hi('TelescopeMatching',      { fg = c.accent, bold = true })
+
+-- blink.cmp
+hi('BlinkCmpMenu',           { link = 'Pmenu' })
+hi('BlinkCmpMenuBorder',     { link = 'FloatBorder' })
+hi('BlinkCmpMenuSelection',  { link = 'PmenuSel' })
+hi('BlinkCmpLabelMatch',     { fg = c.accent, bold = true })
+hi('BlinkCmpDoc',            { link = 'NormalFloat' })
+hi('BlinkCmpDocBorder',      { link = 'FloatBorder' })
+
+-- nvim-tree
+hi('NvimTreeNormal',         { fg = c.fg, bg = bg })
+hi('NvimTreeFolderName',     { fg = c.blue })
+hi('NvimTreeOpenedFolderName', { fg = c.accent, bold = true })
+hi('NvimTreeRootFolder',     { fg = c.accent, bold = true })
+hi('NvimTreeIndentMarker',   { fg = c.border })
+hi('NvimTreeGitDirty',       { fg = c.yellow })
+hi('NvimTreeGitNew',         { fg = c.green })
+
+-- which-key
+hi('WhichKey',               { fg = c.accent })
+hi('WhichKeyGroup',          { fg = c.purple })
+hi('WhichKeyDesc',           { fg = c.fg })
+hi('WhichKeySeparator',      { fg = c.comment })
+
+-- ---------------------------------------------------------
+-- Terminal-Farben im :terminal
+-- ---------------------------------------------------------
+vim.g.terminal_color_0  = c.bg
+vim.g.terminal_color_1  = c.red
+vim.g.terminal_color_2  = c.green
+vim.g.terminal_color_3  = c.yellow
+vim.g.terminal_color_4  = c.blue
+vim.g.terminal_color_5  = c.purple
+vim.g.terminal_color_6  = c.cyan
+vim.g.terminal_color_7  = '#D9E7F2'
+vim.g.terminal_color_8  = c.comment
+vim.g.terminal_color_9  = '#F09090'
+vim.g.terminal_color_10 = '#9BE5BD'
+vim.g.terminal_color_11 = '#F2CE8C'
+vim.g.terminal_color_12 = '#8FC7F0'
+vim.g.terminal_color_13 = '#CDB7F6'
+vim.g.terminal_color_14 = c.ice
+vim.g.terminal_color_15 = '#FFFFFF'
