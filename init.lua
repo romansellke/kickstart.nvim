@@ -46,8 +46,9 @@ lazypath,
 end
 
 vim.opt.rtp:prepend(lazypath)
-vim.cmd.colorscheme('nebel')
+--vim.cmd.colorscheme('nebel')
 require('lazy').setup({
+
 
 -- =======================================================
 -- Which-Key
@@ -128,6 +129,11 @@ require('lazy').setup({
 -- =======================================================
 
 { "nvim-tree/nvim-web-devicons", lazy = true },
+
+-- =======================================================
+-- Color scheme
+-- =======================================================
+{ "catppuccin/nvim", name = "catppuccin-mocha", priority = 1000 },
 
 -- =======================================================
 -- Telescope
